@@ -1,4 +1,5 @@
 #include "get_next_line.h"
+#include "get_next_line_utils.h"
 
 int	ft_strlen(const char *s)
 {
@@ -28,32 +29,32 @@ char	*ft_strchr(const char *s, int c)
 // join the new one to the leftover, free the 
 // we don't want to free s1 early, as it can be NULL in the 
 // first read but just a phase. It's not the end of the world.
-char	*ft_strjoin_free(char *s1, char *s2)
+char	*ft_strjoin_free(char *old_lft, char *buf)
 {
-	char	*new;
+	char	*new_lft;
 	int		len1;
 	int		len2;
 	int		i;
 	int		j;
 
-	len1 = ft_strlen(s1);
-	len2 = ft_strlen(s2);
-	new = (char *)malloc(len1 + len2 + 1);
-	if (!new)
+	len1 = ft_strlen(old_lft);
+	len2 = ft_strlen(buf);
+	new_lft = (char *)malloc(len1 + len2 + 1);
+	if (!new_lft)
 		return (NULL);
 	i = 0;
-	while (s1 && s1[i])
+	while (old_lft && old_lft[i])
 	{
-		new[i++] = s1[i];
+		new_lft[i] = old_lft[i];
 		i++;
 	}
 	j = 0;
-	while (s2 && s2[j])
-		new[i++] = s2[j++];
-	new[i] = '\0';
-	if (s1)
-		free(s1);
-	return (new);
+	while (buf && buf[j])
+		new_lft[i++] = buf[j++];
+	new_lft[i] = '\0';
+	if (old_lft)
+		free(old_lft);
+	return (new_lft);
 }
 
 // Extract exactly one line (up to and including \n if present).

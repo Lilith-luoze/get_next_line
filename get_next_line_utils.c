@@ -83,4 +83,45 @@ char	*ft_strdup_until_nl(char *s)
 	dup[i] = '\0';
 	return (dup);
 }
+int free_when_NULL_or_0(char *check, int i, char *fry)
+{
+	if (i == -1 && !check)
+	{
+		free(fry);
+		return (1);
+	}
+	if (i != -1 && !check[i])
+	{
+		free(fry);
+		return (1);
+	}
+	return 0;
+}
+
+char * ft_save_leftover(char *s)
+{
+	int i;
+	int new_itor;
+
+	i = 0;
+	if (!s || !*s)
+		return (NULL);
+	while(s[i] != '\0' && s[i] != '\n')
+		i++;
+	if (free_when_NULL_or_0(s,i,s))
+		return(NULL);
+	i++;
+	char *new_left;
+	new_left = (char *) malloc(ft_strlen(s+i) + 1);
+	if (free_when_NULL_or_0(new_left, -1 , s))
+		return NULL;
+	new_itor = 0;
+	while(s[i] != '\0')
+		new_left[new_itor++] = s[i++];
+	new_left[new_itor] = '\0';
+	free(s);
+	return new_left;
+}
+
+
 

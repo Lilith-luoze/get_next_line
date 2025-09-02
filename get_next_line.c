@@ -10,20 +10,29 @@ char *get_next_line(int fd)
     while (bytes_read)
     {
         bytes_read = read(fd , buf, BUFFER_SIZE);//so read() remember where it pulls?
-        buf[bytes_read] = '\0';
-        if (ft_strchr((const char *)leftover, '\n'))
+        if (bytes_read > 0)
+        {
+            buf[bytes_read] = '\0';
+            leftover = ft_strjoin_free(leftover, buf);
+        }
+        if (bytes_read < 0)
+        {
+            free(leftover);
+            leftover = NULL;
+            return (NULL);
+        }
+        if (ft_strchr(leftover, '\n'))
         {
            line =  ft_strdup_until_nl(leftover);
            leftover = ft_save_leftover(leftover);
            return (line);
         }
-        leftover = ft_strjoin_free(leftover, buf);
-
-        if (ft_strchr((const char *)leftover, '\n'))
-            return(leftover);
-        if (!leftover)
-            return(NULL);
+    }
+    if (leftover)
+    {
+        line =  ft_strdup_until_nl(leftover);
+        leftover = ft_save_leftover(leftover);
+        return (line);
     }
     return NULL;
-  
 }

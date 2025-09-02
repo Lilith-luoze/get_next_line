@@ -25,8 +25,8 @@ char	*ft_strchr(const char *s, int c)
 	return (NULL);
 }
 
-// join the new one to the leftover, free the 
-// we don't want to free s1 early, as it can be NULL in the 
+// join the new one to the leftover, free the
+// we don't want to free s1 early, as it can be NULL in the
 // first read but just a phase. It's not the end of the world.
 char	*ft_strjoin_free(char *old_lft, char *buf)
 {
@@ -83,7 +83,8 @@ char	*ft_strdup_until_nl(char *s)
 	dup[i] = '\0';
 	return (dup);
 }
-int free_when_NULL_or_0(char *check, int i, char *fry)
+
+int	free_when_NULL_or_0(char *check, int i, char *fry)
 {
 	if (i == -1 && !check)
 	{
@@ -95,33 +96,30 @@ int free_when_NULL_or_0(char *check, int i, char *fry)
 		free(fry);
 		return (1);
 	}
-	return 0;
+	return (0);
 }
 
-char * ft_save_leftover(char *s)
+char	*ft_save_leftover(char *s)
 {
-	int i;
-	int new_itor;
+	int		i;
+	int		new_itor;
+	char	*new_left;
 
 	i = 0;
 	if (!s || !*s)
 		return (NULL);
-	while(s[i] != '\0' && s[i] != '\n')
+	while (s[i] != '\0' && s[i] != '\n')
 		i++;
-	if (free_when_NULL_or_0(s,i,s))
-		return(NULL);
+	if (free_when_NULL_or_0(s, i, s))
+		return (NULL);
 	i++;
-	char *new_left;
-	new_left = (char *) malloc(ft_strlen(s+i) + 1);
-	if (free_when_NULL_or_0(new_left, -1 , s))
-		return NULL;
+	new_left = (char *)malloc(ft_strlen(s + i) + 1);
+	if (free_when_NULL_or_0(new_left, -1, s))
+		return (NULL);
 	new_itor = 0;
-	while(s[i] != '\0')
+	while (s[i] != '\0')
 		new_left[new_itor++] = s[i++];
 	new_left[new_itor] = '\0';
 	free(s);
-	return new_left;
+	return (new_left);
 }
-
-
-

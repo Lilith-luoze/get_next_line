@@ -1,21 +1,22 @@
 #include "get_next_line_bonus.h"
+
 #include <stddef.h>
 
-
-/// @brief init node with given fd
-/// @param s 
-/// @param fd 
-void init_node(t_fdnode *s, int fd)
+/// @brief a helper to find_or_create_node; init node with given fd
+/// @param s
+/// @param fd
+void	init_node(t_fdnode *s, int fd)
 {
-    s->fd = fd;
-    s ->leftover = NULL;
-    s ->next = NULL;
+	s->fd = fd;
+	s->leftover = NULL;
+	s->next = NULL;
 }
 
-/// @brief go through linked list to find same fd
+/// @brief go through linked list to find the right node with para fd,
+/// else create a new one with that fd and added to the head
 /// @param head
 /// @param fd
-/// @return a pointer to the node found or a new node
+/// @return a pointer to the node found or the new node
 t_fdnode	*find_or_create_node(t_fdnode **head, int fd)
 {
 	t_fdnode	*s;
@@ -25,20 +26,75 @@ t_fdnode	*find_or_create_node(t_fdnode **head, int fd)
 		*head = (t_fdnode *)malloc(sizeof(t_fdnode));
 		if (!*head)
 			return (NULL);
-        init_node(*head, fd);
+		init_node(*head, fd);
 		return (*head);
 	}
 	s = *head;
 	while (s && s->fd != fd)
 		s = s->next;
-    if (!s)
-    {
-        s = (t_fdnode *)malloc(sizeof(t_fdnode));
-        if (!s)
-            return(NULL);
-        init_node(s, fd);
-        s ->next = *head;
-        *head = s;
-    }
-   return (s);
+	if (!s)
+	{
+		s = (t_fdnode *)malloc(sizeof(t_fdnode));
+		if (!s)
+			return (NULL);
+		init_node(s, fd);
+		s->next = *head;
+		*head = s;
+	}
+	return (s);
+}
+
+void	*ft_memcpy(void *dst, const void *src, size_t n)
+{
+	size_t			i;
+	unsigned char	*d;
+	const unsigned char	*s;
+
+	if (!dst && !src)
+		return (NULL);
+	d = (unsigned char *)dst;
+	s = (const unsigned char *)src;
+	i = 0;
+	while (i < n)
+	{
+		d[i] = s[i];
+		i++;
+	}
+	return (dst);
+}
+
+/// @brief malloc a new leftover with buf appended to a copied old_lft. free the old_lft. fill the new one to the node.
+/// @param old_lft
+/// @param buf
+/// @return
+char	*strjoin_free_bonus(char **old_lft, char *buf)
+{
+	char	*new_lft;
+	int		len1;
+	int		len2;
+	int		i;
+	int		j;
+
+	if (!(*old_lft))
+		len1 = 0;
+	else
+		len1 = ft_strlen(*old_lft);
+	len2 = ft_strlen(buf);
+	new_lft = (char *)malloc(len1 + len2 + 1);
+	if (!new_lft)
+		return (NULL);
+	i = 0;
+	while (*old_lft && (*old_lft)[i])
+	{
+		new_lft[i] = (*old_lft)[i];
+		i++;
+	}
+	j = 0;
+	while (buf && buf[j])
+		new_lft[i++] = buf[j++];
+	new_lft[i] = '\0';
+	if (*old_lft)
+		free(*old_lft);
+	*old_lft = new_lft;
+	return (new_lft);
 }

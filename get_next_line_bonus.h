@@ -11,6 +11,6 @@ typedef struct s_fdnode
 }	t_fdnode;
 
 t_fdnode	*find_or_create_node(t_fdnode **head, int fd);
-char	*strjoin_free_bonus(char *old_lft, char *buf);
+char	*bonus_strjoin_free(char **old_lft, char *buf);
 
 #endif

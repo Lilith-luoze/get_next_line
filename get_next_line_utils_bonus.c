@@ -1,6 +1,6 @@
 #include "get_next_line_bonus.h"
 
-#include <stddef.h>
+// 4 func here
 
 /// @brief a helper to find_or_create_node; init node with given fd
 /// @param s
@@ -44,10 +44,11 @@ t_fdnode	*find_or_create_node(t_fdnode **head, int fd)
 	return (s);
 }
 
+// helper to bonus_strjoin_free
 void	*ft_memcpy(void *dst, const void *src, size_t n)
 {
-	size_t			i;
-	unsigned char	*d;
+	size_t				i;
+	unsigned char		*d;
 	const unsigned char	*s;
 
 	if (!dst && !src)
@@ -66,14 +67,12 @@ void	*ft_memcpy(void *dst, const void *src, size_t n)
 /// @brief malloc a new leftover with buf appended to a copied old_lft. free the old_lft. fill the new one to the node.
 /// @param old_lft
 /// @param buf
-/// @return
-char	*strjoin_free_bonus(char **old_lft, char *buf)
+/// @return ???buf == NULL
+char	*bonus_strjoin_free(char **old_lft, char *buf)
 {
 	char	*new_lft;
 	int		len1;
 	int		len2;
-	int		i;
-	int		j;
 
 	if (!(*old_lft))
 		len1 = 0;
@@ -83,16 +82,9 @@ char	*strjoin_free_bonus(char **old_lft, char *buf)
 	new_lft = (char *)malloc(len1 + len2 + 1);
 	if (!new_lft)
 		return (NULL);
-	i = 0;
-	while (*old_lft && (*old_lft)[i])
-	{
-		new_lft[i] = (*old_lft)[i];
-		i++;
-	}
-	j = 0;
-	while (buf && buf[j])
-		new_lft[i++] = buf[j++];
-	new_lft[i] = '\0';
+	ft_memcpy(new_lft, *old_lft, (size_t)len1);
+	ft_memcpy(new_lft + len1, buf, (size_t)len2);
+	new_lft[len1 + len2] = '\0';
 	if (*old_lft)
 		free(*old_lft);
 	*old_lft = new_lft;

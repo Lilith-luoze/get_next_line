@@ -10,8 +10,6 @@ int	ft_strlen(const char *s)
 	return (i);
 }
 
-
-
 // join the new one to the leftover, free the
 // we don't want to free s1 early, as it can be NULL in the
 // first read but just a phase. It's not the end of the world.

@@ -1,59 +1,59 @@
 #include "get_next_line.h"
 
-char	*ft_strchr(const char *s, int c)
-{
-	if (!s)
-		return (NULL);
-	while (*s)
-	{
-		if (*s == (char)c)
-			return ((char *)s);
-		s++;
-	}
-	if (c == '\0')
-		return ((char *)s);
-	return (NULL);
-}
 
-char	*update_line_n_left(char **leftover)
-{
-	char	*line;
+/* Read as little data as possible each time get_next_line() is called.
+If a newline character is encountered, return the current line
+immediately.
+Don’t read the whole file and then process each line. */
 
-	line = ft_strdup_until_nl(*leftover);
-	*leftover = ft_save_leftover(*leftover);
-	return (line);
-}
+ /* question- understanding: get_next_line() exhibits undefined behavior if the file associated with the file
+descriptor is modified after the last call, while read() has not yet reached the end
+of the file. */
+/* todo: use valgrind to check mem leak */
 
-void	*reset_static(char **leftover)
+/// @brief free leftover and line,ie. deal with malloc and set both to NULL 
+/// (pass double pointer is actually safer way to free smth, as it can set the original pointer to NULL.)
+/// @param leftover 
+/// @return NULL
+void *reset_static(char **leftover)
 {
-	free(*leftover);
+	free(*leftover); // double free possibility? 
 	*leftover = NULL;
 	return (NULL);
 }
 
+// i think line is not needed as a parameter, as it's just a return value
 char	*get_next_line(int fd)
 {
+	static char	*leftover;
 	char		buf[BUFFER_SIZE + 1];
 	int			bytes_read;
-	static char	*leftover;
+	int len;
 
 	bytes_read = 1;
 	while (bytes_read)
 	{
+		// this branch deals with leftover is non-null AND includes the newline. 
+		if (ft_strchr(leftover, '\n', &len))
+			return (split_leftover_eq_new_line_and_new_leftover(&leftover));
+		/// read some data (also normal case: first call when leftover is NULL)
 		bytes_read = read(fd, buf, BUFFER_SIZE);
-        if (bytes_read < 0)
+        if (bytes_read < 0) // gurd for read error
 			return (reset_static(&leftover));
         if (bytes_read > 0)
 		{
 			buf[bytes_read] = '\0';
-			leftover = ft_strjoin_free(leftover, buf);
-			if (!leftover)
+			leftover = join_leftover_and_buf(leftover, buf);
+			if (!leftover) // guard when malloc fail
 				return (NULL);
 		}
-		if (ft_strchr(leftover, '\n'))
-			return (update_line_n_left(&leftover));
 	}
-	if (leftover)
-		return (update_line_n_left(&leftover));
+	// this branch deals with EOF and leftover is non-null.
+	if (leftover && bytes_read == 0)
+	{// if leftover has \n, split and return the line
+		if(leftover && ft_strchr(leftover, '\n', &len))
+			return (split_leftover_eq_new_line_and_new_leftover(&leftover));
+		return (leftover_as_new_line(&leftover));
+	}
 	return (NULL);
 }

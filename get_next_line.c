@@ -25,8 +25,8 @@ void *reset_static(char **leftover)
 // i think line is not needed as a parameter, as it's just a return value
 char	*get_next_line(int fd)
 {
-	static char	*leftover;
 	char		buf[BUFFER_SIZE + 1];
+	static char	*leftover;
 	int			bytes_read;
 	int len;
 

@@ -28,9 +28,11 @@ int main()
     // Reading from a file
 int fd = open("test.txt", O_RDONLY);
 char *line;
+// line = get_next_line(fd);
+// free(line);
 while ((line = get_next_line(fd)))
 {
-    printf("len=%d\n", ft_strlen(line));
+    printf("len=%d, line=%s\n", (int)ft_strlen(line), line);
     free(line);
 }
 close(fd);

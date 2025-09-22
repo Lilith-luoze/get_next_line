@@ -26,7 +26,7 @@ void *reset_static(char **leftover)
 char	*get_next_line(int fd)
 {
 	char		buf[BUFFER_SIZE + 1];
-	static char	*leftover;
+	static char	     *leftover;
 	int			bytes_read;
 	int len;
 

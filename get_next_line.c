@@ -11,49 +11,49 @@ descriptor is modified after the last call, while read() has not yet reached the
 of the file. */
 /* todo: use valgrind to check mem leak */
 
-/// @brief free leftover and line,ie. deal with malloc and set both to NULL 
+/// @brief free pendingContent and line,ie. deal with malloc and set both to NULL 
 /// (pass double pointer is actually safer way to free smth, as it can set the original pointer to NULL.)
-/// @param leftover 
+/// @param pendingContent 
 /// @return NULL
-void *reset_static(char **leftover)
+void *reset_static(char **pendingContent)
 {
-	free(*leftover); // double free possibility? 
-	*leftover = NULL;
+	free(*pendingContent); // double free possibility? 
+	*pendingContent = NULL;
 	return (NULL);
 }
 
-// i think line is not needed as a parameter, as it's just a return value
+// FRAME: let main, owns all of the memory control. It's a safer way.
 char	*get_next_line(int fd)
 {
-	static char  		buf[BUFFER_SIZE + 1];
-	char	     *leftover;
+	static char  buf[BUFFER_SIZE + 1];
+	char	     *pendingContent;
 	int			bytes_read;
 	int len;
 
 	bytes_read = 1;
 	while (bytes_read)
 	{
-		// this branch deals with leftover is non-null AND includes the newline. 
-		if (ft_strchr(leftover, '\n', &len))
-			return (split_leftover_eq_new_line_and_new_leftover(&leftover));
-		/// read some data (also normal case: first call when leftover is NULL)
+		// this branch deals with pendingContent is non-null AND includes the newline. 
+		if (ft_strchr(pendingContent, '\n', &len))
+			return (split_leftover_eq_new_line_and_new_leftover(&pendingContent));
+		/// read some data (also normal case: first call when pendingContent is NULL)
 		bytes_read = read(fd, buf, BUFFER_SIZE);
         if (bytes_read < 0) // gurd for read error
-			return (reset_static(&leftover));
+			return (reset_static(&pendingContent));
         if (bytes_read > 0)
 		{
 			buf[bytes_read] = '\0';
-			leftover = join_leftover_and_buf(leftover, buf);
-			if (!leftover) // guard when malloc fail
+			pendingContent = join_leftover_and_buf(pendingContent, buf);
+			if (!pendingContent) // guard when malloc fail
 				return (NULL);
 		}
 	}
-	// this branch deals with EOF and leftover is non-null.
-	if (leftover && bytes_read == 0)
-	{// if leftover has \n, split and return the line
-		if(leftover && ft_strchr(leftover, '\n', &len))
-			return (split_leftover_eq_new_line_and_new_leftover(&leftover));
-		return (leftover_as_new_line(&leftover));
+	// this branch deals with EOF and pendingContent is non-null.
+	if (pendingContent && bytes_read == 0)
+	{// if pendingContent has \n, split and return the line
+		if(pendingContent && ft_strchr(pendingContent, '\n', &len))
+			return (split_leftover_eq_new_line_and_new_leftover(&pendingContent));
+		return (leftover_as_new_line(&pendingContent));
 	}
 	return (NULL);
 }

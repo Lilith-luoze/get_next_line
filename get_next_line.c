@@ -31,6 +31,10 @@ char	*get_next_line(int fd)
 	int len;
 
 	bytes_read = 1;
+	// 1. read once
+	// 2. add to malloced pendingcontent.
+	// 3. check pendingcontent - no \n and no EOF? go to 1. - \n ? (on - building ) (deal with -1 later) 
+		// my question: is the static char big enough to hold the "leftover"? 
 	while (bytes_read)
 	{
 		// this branch deals with pendingContent is non-null AND includes the newline. 

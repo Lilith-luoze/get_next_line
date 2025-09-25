@@ -44,47 +44,50 @@ char	*ft_join_strs(char *pending_content, char **buf , char *new_content)
 	return (new_content);
 }
 
-/// @brief split buf by the 1st sep. Update the buf with the leftover part. notice that user has to make sure at lease one sep exists or segmentfault.
+/// @brief split buf by the 1st sep. Return the first part including the sep while update the double pointer buf with its second half. notice that user has to make sure at lease one sep exists or segmentfault.
 /// @param buf 
 /// @param sep 
 /// @return the first part array buf
-char *ft_split_strs(char **buf, char sep)
+void ft_split_strs(char **buf, char **first_half, char sep)
 {
-	char *to_append[BUFFER_SIZE + 1];
 	int i;
 	int j;
 
 	i = 0;
 	while ((*buf)[i] != sep)
 	{
-		to_append[i] = (*buf)[i];
+		(*first_half)[i] = (*buf)[i];
 		i++;
 	}
-	to_append[i] = sep;
+	(*first_half)[i] = (*buf)[i];
 	i++;
+	(*first_half)[i] = '\0';
 	j = 0; 
-	
-	(*buf)[j] = (*buf)[i];
-	return to_append;
+	while((*buf)[i] != '\0')
+		(*buf)[j++] = (*buf)[i++];
+	(*buf)[j] = '\0';
 }
 
-/// @brief copy one whole str to dst, then part of another str (until param sep) to dst, nul term it. copy left part to the original second str. Free the whole str.
+/// @brief copy one whole str to dst, then part of another str (until param sep) to dst, nul term it. copy left part to the original second str. Free the whole str in func join.
 /// @param  
 /// @param  
 /// @param  
-split_buf_and_join_to_cnt(pending_content, buf, new_content, next_line)
+char *split_buf_and_join_to_cnt(char *pending_content, char **buf, char *new_content, char *next_line)
 {
-
+	char to_append[BUFFER_SIZE + 1];
+	ft_split_strs(buf, &to_append, '\n');
+	pending_content = ft_join_strs(pending_content, &to_append, new_content);
+	return pending_content;
 }
 
 /// @brief two case (todo: create first) : ------b) \n ? split: return the 1st half part, and store the latter half to static buf c) no \n and EOF? (the condition can be refined if needed) : combined with b) return the whole thing.
 /// @return return new pending content. NULL if malloc failed.
-char	*split_or_join_with_malloc(char **buf, char *pending_content, int bytes_read, int len_pendingcnt , char *next_line)
+char	*split_or_join_with_malloc(char **buf, char *pending_content, int bytes_read, int len_pendingcnt , char *has_newline)
 {
 	char	*new_content;
 	int	len_new_content;
 
-	if (!next_line && !bytes_read)
+	if (!has_newline && !bytes_read)
 	{
 		len_new_content = bytes_read + len_pendingcnt;
 		if (len_new_content)
@@ -95,17 +98,17 @@ char	*split_or_join_with_malloc(char **buf, char *pending_content, int bytes_rea
 			new_content = ft_join_strs(pending_content, buf, new_content);
 			return new_content;
 		}
-		return NULL;
 	}
-	else if(next_line)
+	if(has_newline)
 	{
 		len_new_content = len_pendingcnt + ft_strlen_sep(*buf , '\n') + 1;
 		new_content = malloc(len_new_content +1);
 		if (!new_content)
 				return NULL;
-		new_content = split_buf_and_join_to_cnt(pending_content, buf, new_content , next_line);
+		new_content = split_buf_and_join_to_cnt(pending_content, buf, new_content , has_newline);
+		return new_content;
 	}
-	return new_content;
+	return NULL;
 }
 
 /// @brief count length of string ends with param the 1st char of sep. (notice if sep isn't '\0', then at least one sep must exist in s , or else it will cause segfault)

@@ -30,7 +30,6 @@ char	*get_next_line(int fd)
 	int len_pendingcnt;
 	char * next_line;
 
-
 	// nec init
 	bytes_read = 1;
 	pending_content = NULL;

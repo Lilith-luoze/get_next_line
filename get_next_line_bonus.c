@@ -15,7 +15,7 @@ char	*get_next_line(int fd)
 		bytes_read = read(fd, buf, BUFFER_SIZE);
 		cur = find_or_create_node(&head, fd);
         if (bytes_read < 0)
-			return (reset_static(&(cur ->leftover)));
+			return (reset_return_null(&(cur ->leftover)));
         if (bytes_read > 0)
 		{
 			buf[bytes_read] = '\0';
@@ -24,10 +24,10 @@ char	*get_next_line(int fd)
 				return (NULL);
 		}
 		if (ft_strchr(cur ->leftover, '\n', &len))
-			return (split_leftover_eq_new_line_and_new_leftover(&(cur ->leftover)));
+			return (split_or_join_with_malloc(&(cur ->leftover)));
 	}
 	if (cur ->leftover)
-		return (split_leftover_eq_new_line_and_new_leftover(&(cur ->leftover)));
+		return (split_or_join_with_malloc(&(cur ->leftover)));
 	return (NULL);
 }
 

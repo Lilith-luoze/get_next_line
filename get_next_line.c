@@ -11,14 +11,13 @@ descriptor is modified after the last call, while read() has not yet reached the
 of the file. */
 /* todo: use valgrind to check mem leak */
 
-/// @brief free pendingContent and line,ie. deal with malloc and set both to NULL 
-/// (pass double pointer is actually safer way to free smth, as it can set the original pointer to NULL.)
-/// @param pendingContent 
+/// @brief free pending_content and line,ie. deal with malloc and set to NULL to avoid double free 
+/// @param pending_content 
 /// @return NULL
-void *reset_static(char **pendingContent)
+void *reset_return_null(char **pending_content)
 {
-	free(*pendingContent); // double free possibility? 
-	*pendingContent = NULL;
+	free(*pending_content); 
+	*pending_content = NULL;
 	return (NULL);
 }
 
@@ -26,38 +25,38 @@ void *reset_static(char **pendingContent)
 char	*get_next_line(int fd)
 {
 	static char  buf[BUFFER_SIZE + 1];
-	char	     *pendingContent;
 	int			bytes_read;
-	int len;
+	char	     *pending_content;
+	int len_pendingcnt;
+	char * next_line;
 
+
+	// nec init
 	bytes_read = 1;
-	// 1. read once
-	// 2. add to malloced pendingcontent.
-	// 3. check pendingcontent - no \n and no EOF? go to 1. - \n ? (on - building ) (deal with -1 later) 
-		// my question: is the static char big enough to hold the "leftover"? 
+	pending_content = NULL;
+	next_line = 	NULL;
+	// 1. read once -- get signal of EOF, len_buf
+	// 2. check buf a) no \n and no EOF? go to 1. --b) \n ? split: return the 1st half part, and store the latter 
+	// half to static buf [it will definitely less than the length of the buf (cuz it's only discovered in this round)] while (bytes_read)
+	//  --c) no \n and EOF? (the condition can be refined if needed) : combined with b) return the whole thing. d) read int is -1? just return NULL.
+		// solved question: is the static char big enough to hold the "leftover"?  -- yes, see the brackets above.
+	// 3. add to malloced pendingcontent and/or return.
 	while (bytes_read)
 	{
-		// this branch deals with pendingContent is non-null AND includes the newline. 
-		if (ft_strchr(pendingContent, '\n', &len))
-			return (split_leftover_eq_new_line_and_new_leftover(&pendingContent));
-		/// read some data (also normal case: first call when pendingContent is NULL)
 		bytes_read = read(fd, buf, BUFFER_SIZE);
-        if (bytes_read < 0) // gurd for read error
-			return (reset_static(&pendingContent));
-        if (bytes_read > 0)
-		{
-			buf[bytes_read] = '\0';
-			pendingContent = join_leftover_and_buf(pendingContent, buf);
-			if (!pendingContent) // guard when malloc fail
-				return (NULL);
-		}
-	}
-	// this branch deals with EOF and pendingContent is non-null.
-	if (pendingContent && bytes_read == 0)
-	{// if pendingContent has \n, split and return the line
-		if(pendingContent && ft_strchr(pendingContent, '\n', &len))
-			return (split_leftover_eq_new_line_and_new_leftover(&pendingContent));
-		return (leftover_as_new_line(&pendingContent));
+		// cheked .when to append \0
+		if (bytes_read == -1)
+			return (reset_return_null(&pending_content));
+		buf[bytes_read] = '\0';
+		next_line = where_is_newline(buf);
+		if ((!next_line) && bytes_read)
+			continue;
+		len_pendingcnt = ft_strlen(pending_content);
+		split_or_join_with_malloc();
+
+
+		// all append from now on in this cycle?
+		
 	}
 	return (NULL);
 }

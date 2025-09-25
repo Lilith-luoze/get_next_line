@@ -25,56 +25,79 @@ char	*save_leftover(char *s, char *nl)
 	return (new_left);
 }
 
-/// @brief check if char c is in string s. c can be '\0'.
+/// @brief go through param s to find the first new line and return it.
 /// @param s 
-/// @param c 
-/// @param len if not NULL, store the length from start of s to the first occurrence of c.
-/// @return the pointer to the first occurrence of c in s; NULL if not found or s is NULL
-char	*ft_strchr(const char *s, int c, int *len)
+/// @return pointer to 1st new line. NULL if not found.
+char	*where_is_newline(char *buf_terminated)
 {
 	int i;
 
 	i = 0;
-	if (!s)
+	if (!buf_terminated)
 		return (NULL);
-	while (s[i])
+	while (buf_terminated[i])
 	{
-		if (s[i] == (char)c)
-		{
-			if (len)
-				*len = i + 1;
-			return ((char *)(s + i));
-		}
+		if (buf_terminated[i] == '\n')
+			return ((buf_terminated + i));
 		i++;
-	}
-	if (c == '\0')
-	{
-		if (len)
-			*len = i + 1;
-		return ((char *)(s + i));
 	}
 	return (NULL);
 }
 
-/// @brief split the leftover with at least one \n. the front part - returned; the latter part - new leftover. Free the old leftover.
-/// @param leftover 
-/// @return return the new line with \n included. NULL if leftover is NULL or malloc fail. 
-char	*split_leftover_eq_new_line_and_new_leftover(char **left)
+/// @brief join two strs ending with '\0' into a malloced param. Before returning the new filled content, free the old one that is unused.
+/// @param left 
+/// @param buf 
+/// @return a new malloced str. NULL if malloc fail.
+char	*ft_join_strs(char *pending_content, char **buf , char *new_content)
 {
-	char	*line;
-	char *nl;
-	int len;
+	int		i;
+	int		j;
 
-	nl = ft_strchr(*left, '\n', &len);
-	if (!nl)
-		return (NULL);
+	if (!(*buf))
+		return (pending_content);
+	i = 0;
+	while (pending_content && pending_content[i])
+	{
+		new_content[i] = pending_content[i];
+		i++;
+	}
+	j = 0;
+	while ((*buf)[j])
+		new_content[i++] = (*buf)[j++];
+	new_content[i] = '\0';
+	free(pending_content);
+	return (new_content);
+}
+
+/// @brief two case (todo: create first) : ------b) \n ? split: return the 1st half part, and store the latter half to static buf c) no \n and EOF? (the condition can be refined if needed) : combined with b) return the whole thing.
+/// @return return new pending content. NULL if malloc failed.
+char	*split_or_join_with_malloc(char **buf, char *pending_content, int bytes_read, int len_pendingcnt , char *next_line)
+{
+	char	*new_content;
+	int	len_new_content;
+
+	len_new_content = bytes_read + len_pendingcnt;
+	if (!next_line && !bytes_read)
+	{
+		if (len_new_content)
+		{
+			new_content = malloc(len_new_content +1);
+			if (!new_content)
+				return NULL;
+			new_content = ft_join_strs(pending_content, buf, new_content);
+			return new_content;
+		}
+		return NULL;
+	}
+	split
 	line = generate_line_nl(*left , nl , len);
 	*left = save_leftover(*left , nl);
 	return (line);
 }
 
-// Add all the helper functions you need in the get_next_line_utils.c file.
-
+/// @brief count length of string ends with \0.
+/// @param s 
+/// @return length of str. If NULL then 0.
 int	ft_strlen(char *s)
 {
 	int	i;
@@ -85,40 +108,7 @@ int	ft_strlen(char *s)
 	return (i);
 }
 
-// join the new one to the leftover, free the
-// we don't want to free s1 early, as it can be NULL in the
-// first read but just a phase. It's not the end of the world.
 
-/// @brief join left and buf, free left. (left can be NULL)
-/// @param left 
-/// @param buf 
-/// @return  a new malloced string which is the concatenation of left and buf. NULL if malloc fail.
-char	*join_leftover_and_buf(char *left, char *buf)
-{
-	char	*new;
-	int		len1;
-	int		len2;
-	int		i;
-	int		j;
-
-	len1 = ft_strlen(left);
-	len2 = ft_strlen(buf);
-	new = malloc(len1 + len2 + 1);
-	if (!new)
-		return (NULL);
-	i = 0;
-	while (left && left[i])
-	{
-		new[i] = left[i];
-		i++;
-	}
-	j = 0;
-	while (buf && buf[j])
-		new[i++] = buf[j++];
-	new[i] = '\0';
-	free(left);
-	return (new);
-}
 
 /// @brief make the whole leftover as the newline. set static leftover to NULL. (essentially switch the string it points to)
 /// @param leftover 

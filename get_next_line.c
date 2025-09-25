@@ -36,27 +36,24 @@ char	*get_next_line(int fd)
 	new_line = 	NULL;
 	// 1. read once -- get signal of EOF, len_buf
 	
-	// 2. while in each loop, check buf 
-	//a) no \n and no EOF?	only join.
+	// 2. while in each loop, check buf by bytes_read (todo : \n later) . Add to malloced pendingcontent and/or return.
+	//a) still ?	only join.
 	//b) \n ? 				split and join and return.
 	//c) no \n and EOF?		just return. 
-
 	//d) read int is -1? just return NULL. 
 	// solved question: is the static char big enough to hold the "leftover"?  -- yes, cuz it's only discovered in buf.
-	
 
-	// 3. add to malloced pendingcontent and/or return.
 	while (bytes_read)
 	{
 		bytes_read = read(fd, buf, BUFFER_SIZE);
-		// cheked whether to append \0 -- exclude cases
+			// cheked whether to append \0 -- exclude cases
 		if (bytes_read == -1)
-			return (reset_return_null(&pending_content));
+			return (reset_return_null(&pending_content));		
 		if (bytes_read == 0)
 			return ;
 		buf[bytes_read] = '\0';
 		// check whether newline appears and where
-		new_line = where_is_newline(buf);
+		
 		len_pendingcnt = ft_strlen(pending_content);
 		split_or_join_with_malloc();
 

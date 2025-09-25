@@ -14,12 +14,31 @@ of the file. */
 /// @brief free pending_content and line,ie. deal with malloc and set to NULL to avoid double free 
 /// @param pending_content 
 /// @return NULL
+
 void *reset_return_null(char **pending_content)
 {
 	free(*pending_content); 
 	*pending_content = NULL;
 	return (NULL);
 }
+
+char *return_eof_content() {
+    // TODO: malloc, join, free
+}
+
+// PROJECT STARTING POINT -- A CLUE: GO IN THE PROCESS IN MIND	
+t_parsed ft_read_and_parse(fd, &buf, &pending_content, BUFFER_SIZE)
+{
+	char  temp[BUFFER_SIZE + 1];
+	int bytes_read;
+
+	bytes_read = read(fd, temp, BUFFER_SIZE);
+	if (bytes_read == -1)
+		return (reset_return_null(&pending_content));
+	
+	
+}
+
 
 // FRAME: let main, owns all of the memory control. It's a safer way.
 char	*get_next_line(int fd)
@@ -32,7 +51,7 @@ char	*get_next_line(int fd)
 
 	// nec init
 	bytes_read = 1;
-	pending_content = NULL;
+			pending_content = NULL;
 	new_line = 	NULL;
 	// 1. read once -- get signal of EOF, len_buf
 	
@@ -45,10 +64,9 @@ char	*get_next_line(int fd)
 
 	while (bytes_read)
 	{
-		bytes_read = read(fd, buf, BUFFER_SIZE);
+		return_here = ft_read(fd, &buf, &pending_content, BUFFER_SIZE);
 			// cheked whether to append \0 -- exclude cases
-		if (bytes_read == -1)
-			return (reset_return_null(&pending_content));		
+		
 		if (bytes_read == 0)
 			return ;
 		buf[bytes_read] = '\0';

@@ -4,7 +4,7 @@
 /// @brief go through param s to find the first new line and return it.
 /// @param s 
 /// @return pointer to 1st new line. NULL if not found.
-char	*where_is_newline(char *buf_terminated)
+char	*has_newline(char *buf_terminated)
 {
 	int i;
 
@@ -20,8 +20,8 @@ char	*where_is_newline(char *buf_terminated)
 	return (NULL);
 }
 
-/// @brief join two strs ending with sep into a malloced param. Before returning the new filled content, free the old one that is unused.
-/// @return a new malloced str. NULL if malloc fail.
+/// @brief join array s2 to malloc-ed s1. notice to free s1 and set array s2[0] to null.
+/// @return joined malloc-ed str. NULL if malloc fail.
 char	*ft_join_strs(char *pending_content, char **buf , char *new_content)
 {
 	int		i;

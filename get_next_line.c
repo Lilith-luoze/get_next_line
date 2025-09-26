@@ -21,10 +21,12 @@ void *reset_return_null(char **pending_content)
 	return (NULL);
 }
 
-// FRAME: let main, owns all of the memory control. It's a safer way.
+// WHY REBASED THE MEMORY STRUCTURE TO STATIC ARRAY: let main, owns all of the memory control. It's a safer way.
+	// solved question: is the static char big enough to hold the "leftover"?  -- yes, cuz it's only discovered in buf.
 char	*get_next_line(int fd)
 {
 	static char  buf[BUFFER_SIZE + 1];
+	char temp[BUFFER_SIZE + 1];
 	int			bytes_read;
 	char	     *pending_content;
 	int len_pendingcnt;
@@ -34,32 +36,22 @@ char	*get_next_line(int fd)
 	bytes_read = 1;
 	pending_content = NULL;
 	new_line = 	NULL;
-	// 1. read once -- get signal of EOF, len_buf
-	
-	// 2. while in each loop, check buf by bytes_read (todo : \n later) . Add to malloced pendingcontent and/or return.
-	//a) still ?	only join.
-	//b) \n ? 				split and join and return.
-	//c) no \n and EOF?		just return. 
-	//d) read int is -1? just return NULL. 
-	// solved question: is the static char big enough to hold the "leftover"?  -- yes, cuz it's only discovered in buf.
-
 	while (bytes_read)
 	{
-		bytes_read = read(fd, buf, BUFFER_SIZE);
+		bytes_read = read(fd, temp, BUFFER_SIZE);
 			// cheked whether to append \0 -- exclude cases
 		if (bytes_read == -1)
 			return (reset_return_null(&pending_content));		
 		if (bytes_read == 0)
-			return ;
-		buf[bytes_read] = '\0';
-		// check whether newline appears and where
-		
-		len_pendingcnt = ft_strlen(pending_content);
-		split_or_join_with_malloc();
-
-
-		// all append from now on in this cycle?
-		
+			return(ft_join_strs(pending_content, buf)); // todo mark: check if called only once, will it cause memory leak?
+		if (bytes_read > 0)
+		{
+			temp[bytes_read] = '\0';
+			if (has_newline())
+				return (split_and_join_twice());
+			ft_join_strs(); // notes: it seems, only if there could be next call, should it use static array. In other words, if bytes_read == 0, it can't happen. 
+		}
 	}
 	return (NULL);
 }
+		

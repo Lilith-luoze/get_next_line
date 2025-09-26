@@ -39,13 +39,14 @@ char	*get_next_line(int fd)
 			// cheked whether to append \0 -- exclude cases
 		if (bytes_read == -1)
 			return (reset_return_null(&pending_content));		
+		temp[bytes_read] = '\0';
 		if (bytes_read == 0)
 			return(ft_join_strs(pending_content, buf)); // todo mark: check if called only once, will it cause memory leak?
 		if (bytes_read > 0)
 		{
 			// "three parts interelated to each other" : this is THE main branch for it.
 			// smmary: static array + malloc-ed + temp . at most three parts.
-			temp[bytes_read] = '\0';
+			
 			if (has_newline())
 				return (ft_split_and_join_twice());
 			pending_content = ft_join_strs(buf , pending_content); 

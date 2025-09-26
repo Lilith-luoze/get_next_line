@@ -37,7 +37,7 @@ char	*get_next_line(int fd)
 	if (!hd_stat[0] && has_newline(hd_stat))
 	{
 		rp = ft_join(NULL, hd_stat, '\n');
-		ft_update_static_array(&hd_stat , hd_stat);
+		ft_update_static_array(hd_stat , hd_stat);
 		return (rp);
 	}
 	if (!hd_stat[0])
@@ -55,7 +55,7 @@ char	*get_next_line(int fd)
 		{
 			rp = ft_join(pending_content, temp, '\n');
 			free(pending_content);
-			ft_update_static_array(&hd_stat , temp);
+			ft_update_static_array(hd_stat , temp);
 			return (rp);
 		}
 		// this case has to continue looping

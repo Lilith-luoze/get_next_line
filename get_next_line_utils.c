@@ -57,7 +57,7 @@ char	*ft_join(char *hd, char *tl, char sep)
 
 /// @brief update static array buf before return in get_next_line. can always use it before return.
 	// #test the case when buf is the address of s. should be okay.
-void	ft_update_static_array(char **buf, char *s)
+void	ft_update_static_array(char *buf, char *s)
 {
 	int	i;
 	int	j;
@@ -70,9 +70,9 @@ void	ft_update_static_array(char **buf, char *s)
 	j = 0;
 	while (s[i] != '\0')
 	{
-		(*buf)[j++] = s[i++];
+		buf[j++] = s[i++];
 	}
-	(*buf)[j] = '\0';
+	buf[j] = '\0';
 }
 
 /// @brief count length of string ends with param the 1st char of sep. (notice if sep isn't '\0', then at least one sep must exist in s , or else it will cause segfault)

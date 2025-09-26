@@ -3,16 +3,24 @@
 /// 4 possibility in it
 ft_structure_dealer(char **hd_stat, char **mmid, char *ttemp)
 {
-	char *buf;
+	// first, if *mmid is NULL. Then no need to care about free of malloc.
+	if (!(*mmid))
+		return ft_join(*hd_stat , *ttemp , '\n', 1);
 
-	ft_join(*hd , *mmid , sep , append_sep);
-	ft_join(*hd , *mmid , sep , append_sep);
-	ft_join(*hd , *mmid , sep , append_sep);
+	char *rp;
+	// if the static head array isn't empty
 	if (*hd_stat && (*hd_stat)[0])
 	{
 		
-		ft_join(*hd , *mmid , sep , append_sep);
+		rp = ft_join(*hd_stat , *mmid , sep , append_sep);
 	}
+	
+	
+
+	
+	ft_join(*hd , *mmid , sep , append_sep);
+	ft_join(*hd , *mmid , sep , append_sep);
+	
 	// join_pending_content_to_static_array
 	// join_temp_until_nl_to_pending_content
 }

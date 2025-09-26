@@ -1,25 +1,39 @@
 #include "get_next_line.h"
 
-/// 4 possibility in it
-ft_structure_dealer(char **hd_stat, char **mmid, char *ttemp)
+/// at most 4 possibility in it
+char *ft_structure_dealer(char **hd_stat, char **mmid, char *ttemp)
 {
-	// first, if *mmid is NULL. Then no need to care about free of malloc.
+	// first, if *mmid is NULL. Then no need to care about free of malloc. three to go. 
 	if (!(*mmid))
 		return ft_join(*hd_stat , *ttemp , '\n', 1);
 
 	char *rp;
-	// if the static head array isn't empty
-	if (*hd_stat && (*hd_stat)[0])
-	{
+	// // if the static head array isn't empty
+	// if (*hd_stat && (*hd_stat)[0])
+	// {
 		
-		rp = ft_join(*hd_stat , *mmid , sep , append_sep);
+	// 	rp = ft_join(*hd_stat , *mmid , sep , append_sep);
+	// }
+	
+	// the case when temp continuously adding to mmid
+	if (ttemp[0])
+	{
+		if (has_newline(ttemp))
+			rp = ft_join(*mmid , ttemp , '\n' , 1);
+		else
+			rp = ft_join(*mmid , ttemp , '\0' , 0);
+		free(*mmid);
+		*mmid = NULL;
+		return rp;
+	}
+	// the case when bytes_read is 0, so ttemp[0] is \0.
+	if( !ttemp[0] && !(*hd_stat) && !(*mmid))
+	{
+
 	}
 	
-	
+	ft_join(*hd , *mmid , sep , append_sep);
 
-	
-	ft_join(*hd , *mmid , sep , append_sep);
-	ft_join(*hd , *mmid , sep , append_sep);
 	
 	// join_pending_content_to_static_array
 	// join_temp_until_nl_to_pending_content

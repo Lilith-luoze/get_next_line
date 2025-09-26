@@ -22,6 +22,8 @@ void	*reset_return_null(char **pending_content)
 	return (NULL);
 }
 
+char *ft_join(char *hd, char*tl, char sep , int append_sep);
+
 char	*get_next_line(int fd)
 {
 	static char	hd_stat[BUFFER_SIZE + 1];
@@ -32,6 +34,11 @@ char	*get_next_line(int fd)
 	// nec init
 	bytes_read = 1;
 	pending_content = NULL;
+
+	if (!hd_stat[0])
+	{
+		ft_join(hd_stat, pending_content, )
+	}
 	while (bytes_read)
 	{
 		bytes_read = read(fd, temp, BUFFER_SIZE);

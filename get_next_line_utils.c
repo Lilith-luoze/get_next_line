@@ -1,5 +1,23 @@
 #include "get_next_line.h"
 
+/// 4 possibility in it
+ft_structure_dealer(char **hd_stat, char **mmid, char *ttemp)
+{
+	char *buf;
+
+	ft_join(*hd , *mmid , sep , append_sep);
+	ft_join(*hd , *mmid , sep , append_sep);
+	ft_join(*hd , *mmid , sep , append_sep);
+	if (*hd_stat && (*hd_stat)[0])
+	{
+		
+		ft_join(*hd , *mmid , sep , append_sep);
+	}
+	// join_pending_content_to_static_array
+	// join_temp_until_nl_to_pending_content
+}
+
+
 
 /// @brief go through param s to find the first new line and return it.
 /// @param s 
@@ -74,42 +92,6 @@ void ft_update_static_array(char **buf, char *s)
 	(*buf)[j] = '\0';
 }
 
-/// @brief split buf by the 1st sep. Return the first part including the sep while update the double pointer buf with its second half. notice that user has to make sure at lease one sep exists or segmentfault.
-/// @param buf 
-/// @param sep 
-/// @return the first part array buf
-void ft_split_strs(char **buf, char **first_half, char sep)
-{
-	int i;
-	int j;
-
-	i = 0;
-	while ((*buf)[i] != sep)
-	{
-		(*first_half)[i] = (*buf)[i];
-		i++;
-	}
-	(*first_half)[i] = (*buf)[i];
-	i++;
-	(*first_half)[i] = '\0';
-	j = 0; 
-	while((*buf)[i] != '\0')
-		(*buf)[j++] = (*buf)[i++];
-	(*buf)[j] = '\0';
-}
-
-/// @brief copy one whole str to dst, then part of another str (until param sep) to dst, nul term it. copy left part to the original second str. Free the whole str in func join.
-/// @param  
-/// @param  
-/// @param  
-char *split_buf_and_join_to_cnt(char *pending_content, char **buf, char *new_content, char *next_line)
-{
-	char to_append[BUFFER_SIZE + 1];
-	ft_split_strs(buf, &to_append, '\n');
-	pending_content = ft_join_strs(pending_content, &to_append, new_content);
-	return pending_content;
-}
-
 /// @brief split s1 (array), its first part joining to s2, the other part joining to 
 ft_split_and_join_twice()
 {
@@ -119,37 +101,6 @@ ft_split_and_join_twice()
 ft_update_static_array()
 {
 
-}
-
-/// @brief two case (todo: create first) : ------b) \n ? split: return the 1st half part, and store the latter half to static buf c) no \n and EOF? (the condition can be refined if needed) : combined with b) return the whole thing.
-/// @return return new pending content. NULL if malloc failed.
-char	*split_or_join_with_malloc(char **buf, char *pending_content, int bytes_read, int len_pendingcnt , char *has_newline)
-{
-	char	*new_content;
-	int	len_new_content;
-
-	if (!has_newline && !bytes_read)
-	{
-		len_new_content = bytes_read + len_pendingcnt;
-		if (len_new_content)
-		{
-			new_content = malloc(len_new_content +1);
-			if (!new_content)
-				return NULL;
-			new_content = ft_join_strs(pending_content, buf, new_content);
-			return new_content;
-		}
-	}
-	if(has_newline)
-	{
-		len_new_content = len_pendingcnt + ft_strlen_sep(*buf , '\n') + 1;
-		new_content = malloc(len_new_content +1);
-		if (!new_content)
-				return NULL;
-		new_content = split_buf_and_join_to_cnt(pending_content, buf, new_content , has_newline);
-		return new_content;
-	}
-	return NULL;
 }
 
 /// @brief count length of string ends with param the 1st char of sep. (notice if sep isn't '\0', then at least one sep must exist in s , or else it will cause segfault)

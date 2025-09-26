@@ -23,6 +23,8 @@ void	*reset_return_null(char **pending_content)
 }
 
 char *ft_join(char *hd, char*tl, char sep , int append_sep);
+char	*has_newline(char *buf_terminated);
+void ft_update_static_array(char **buf, char *s);
 
 char	*get_next_line(int fd)
 {
@@ -30,15 +32,20 @@ char	*get_next_line(int fd)
 	char		temp[BUFFER_SIZE + 1];
 	int			bytes_read;
 	char		*pending_content;
+	char *rp;
 
 	// nec init
 	bytes_read = 1;
 	pending_content = NULL;
 
-	if (!hd_stat[0])
+	if (!hd_stat[0] && has_newline(hd_stat))
 	{
-		ft_join(hd_stat, pending_content, )
+		rp = ft_join(NULL, hd_stat, '\n', 1);
+		ft_update_static_array(&hd_stat , hd_stat);
+		return (rp);
 	}
+	if (!hd_stat[0])
+		pending_content = ft_join(NULL, hd_stat, '\0',0);
 	while (bytes_read)
 	{
 		bytes_read = read(fd, temp, BUFFER_SIZE);

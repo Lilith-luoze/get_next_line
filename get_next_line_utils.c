@@ -1,7 +1,7 @@
 #include "get_next_line.h"
 
-/// at most 4 possibility in it
-char *ft_structure_dealer(char **hd_stat, char **mmid, char *ttemp)
+/// only two elements here needs to be dealt with :
+char *ft_structure_dealer(char **mmid, char *ttemp)
 {
 	// first, if *mmid is NULL. Then no need to care about free of malloc. three to go. 
 	if (!(*mmid))
@@ -74,6 +74,7 @@ char	*has_newline(char *buf_terminated)
 	int len_tl;
 	len_hd = ft_strlen(hd , sep);
 	len_tl = ft_strlen(tl , sep);
+	// #test: does it need to check when len_hd plus len_tl still is zero
 	if (append_sep)
 		joint = malloc(len_hd + len_tl + 2);
 	else
@@ -87,7 +88,7 @@ char	*has_newline(char *buf_terminated)
 		i++;
 	}
 	j = 0;
-	while (tl[j])
+	while (tl && tl[j] && tl[j] != sep)
 		joint[i++] = tl[j++];
 	if (append_sep)
 		joint[i++] = sep;
@@ -95,7 +96,7 @@ char	*has_newline(char *buf_terminated)
 	return (joint);
 }
 
-/// @brief update static array buf before return in get_next_line. can always use it before return.
+/// @brief update static array buf before return in get_next_line. can always use it before return. // #test the case when buf is the address of s. should be okay.
 void ft_update_static_array(char **buf, char *s)
 {
 	int i;

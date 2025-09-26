@@ -20,28 +20,58 @@ char	*has_newline(char *buf_terminated)
 	return (NULL);
 }
 
-/// @brief join array s2 to malloc-ed s1. notice to free s1 and set array s2[0] to null.
+/// @brief join array s2 to malloc-ed s1. // when to do this and how? (maybe not free if you wanna reuse it)  notice to free s1 and set array s2[0] to null.
 /// @return joined malloc-ed str. NULL if malloc fail.
-char	*ft_join_strs(char *pending_content, char **buf , char *new_content)
+	/// hd: head 
+	/// hd is always a full str joint by tl until sep, int append decide if the sep is included.
+	/// return a malloc-ed str
+	char *ft_join(char *hd, char*tl, char sep , int append_sep)
 {
 	int		i;
 	int		j;
-
-	if (!(*buf))
-		return (pending_content);
+	char *joint;
+	int len_hd;
+	int len_tl;
+	len_hd = ft_strlen(hd , sep);
+	len_tl = ft_strlen(tl , sep);
+	if (append_sep)
+		joint = malloc(len_hd + len_tl + 2);
+	else
+		joint = malloc(len_hd + len_tl + 1);
+	if (!joint)
+		return (NULL);
 	i = 0;
-	while (pending_content && pending_content[i])
+	while (hd && hd[i])
 	{
-		new_content[i] = pending_content[i];
+		joint[i] = hd[i];
 		i++;
 	}
 	j = 0;
-	while ((*buf)[j])
-		new_content[i++] = (*buf)[j++];
-	new_content[i] = '\0';
-	(*buf)[0] = '\0';
-	free(pending_content);
-	return (new_content);
+	while (tl[j])
+		joint[i++] = tl[j++];
+	if (append_sep)
+		joint[i++] = sep;
+	joint[i] = '\0';
+	return (joint);
+}
+
+/// @brief update static array buf before return in get_next_line. can always use it before return.
+void ft_update_static_array(char **buf, char *s)
+{
+	int i;
+	int j;
+
+	i = 0;
+	while (s[i] != '\0' && s[i] != '\n')
+		i++;
+	if (s[i] == '\n')
+		i++;
+	j = 0;
+	while (s[i] != '\0')
+	{
+		(*buf)[j++] = s[i++];
+	}
+	(*buf)[j] = '\0';
 }
 
 /// @brief split buf by the 1st sep. Return the first part including the sep while update the double pointer buf with its second half. notice that user has to make sure at lease one sep exists or segmentfault.
@@ -78,6 +108,17 @@ char *split_buf_and_join_to_cnt(char *pending_content, char **buf, char *new_con
 	ft_split_strs(buf, &to_append, '\n');
 	pending_content = ft_join_strs(pending_content, &to_append, new_content);
 	return pending_content;
+}
+
+/// @brief split s1 (array), its first part joining to s2, the other part joining to 
+ft_split_and_join_twice()
+{
+
+}
+/// @brief update static array right before return in get_next_line
+ft_update_static_array()
+{
+
 }
 
 /// @brief two case (todo: create first) : ------b) \n ? split: return the 1st half part, and store the latter half to static buf c) no \n and EOF? (the condition can be refined if needed) : combined with b) return the whole thing.

@@ -29,16 +29,13 @@ char	*get_next_line(int fd)
 	char temp[BUFFER_SIZE + 1];
 	int			bytes_read;
 	char	     *pending_content;
-	int len_pendingcnt;
-	char * new_line;
 
 	// nec init
 	bytes_read = 1;
 	pending_content = NULL;
-	new_line = 	NULL;
 	while (bytes_read)
 	{
-		bytes_read = read(fd, temp, BUFFER_SIZE);
+		bytes_read = read(fd, temp, BUFFER_SIZE);  // notes: there are three parts interelated to each other. temp is for receving the reading each cycle and always empted by sub-function, pending_content is for accumulating txt during the loop in get_next_line, static buf is for storing the "leftover" right before return to main (it needs to be updated) 
 			// cheked whether to append \0 -- exclude cases
 		if (bytes_read == -1)
 			return (reset_return_null(&pending_content));		
@@ -46,12 +43,28 @@ char	*get_next_line(int fd)
 			return(ft_join_strs(pending_content, buf)); // todo mark: check if called only once, will it cause memory leak?
 		if (bytes_read > 0)
 		{
+			// "three parts interelated to each other" : this is THE main branch for it.
+			// smmary: static array + malloc-ed + temp . at most three parts.
 			temp[bytes_read] = '\0';
 			if (has_newline())
-				return (split_and_join_twice());
-			ft_join_strs(); // notes: it seems, only if there could be next call, should it use static array. In other words, if bytes_read == 0, it can't happen. 
+				return (ft_split_and_join_twice());
+			pending_content = ft_join_strs(buf , pending_content); 
+			ft_update_buf(&buf);
+			pending_content = ft_join_strs(pending_content, temp); // notes: it seems, only if there could be next call, should it use static array. In other words, if bytes_read == 0, it can't happen. 
 		}
 	}
 	return (NULL);
 }
 		
+
+ft_split_and_join_twice()
+{
+	join_pending_content_to_static_array
+	join_temp_until_nl_to_pending_content
+
+
+	
+	
+
+	//thoughts: whatever the memory structure is, the functioning aspect of join_strs is the same.
+}

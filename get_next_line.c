@@ -53,16 +53,19 @@ char	*get_next_line(int fd)
 			return (reset_return_null(&pending_content));
 		temp[bytes_read] = '\0';
 		if (bytes_read == 0)
-			return (ft_join_strs(pending_content, hd_stat));
-		if (bytes_read > 0)
+			return (pending_content);
+		//this case has to have bytes_read > 0
+		if (has_newline(temp))
 		{
-			// smmary: static array + malloc-ed + temp . at most three parts.
-			if (has_newline())
-				return (ft_split_and_join_twice());
-			// notes: it seems, only if there could be next call,
-				// should it use static array. In other words, if bytes_read == 0,
-				// it can't happen.
+			rp = ft_join(pending_content, temp, '\n', 1);
+			free(pending_content);
+			ft_update_static_array(&hd_stat , temp);
+			return (rp);
 		}
+		// this case has to continue looping
+		rp = ft_join(pending_content, temp, '\0', 0);
+		free(pending_content);
+		pending_content = rp;
 	}
 	return (NULL);
 }

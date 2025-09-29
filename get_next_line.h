@@ -5,7 +5,7 @@
 # include <unistd.h>
 
 #ifndef BUFFER_SIZE
-# define BUFFER_SIZE 66
+# define BUFFER_SIZE 1
 #endif
 
 typedef struct s_join_vars

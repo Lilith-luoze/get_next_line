@@ -32,31 +32,41 @@ int main(int argc, char **argv)
         printf("Usage: %s <filename>\n", argv[0]);
         return (1);
     }
+
+    // ---- Part 1: read until EOF ----
     fd = open(argv[1], O_RDONLY);
     if (fd < 0)
     {
         perror("open");
         return (1);
     }
+    printf("=== FULL LOOP UNTIL EOF ===\n");
+    while ((line = get_next_line(fd)))
+    {
+        printf("LOOP: %s", line);
+        free(line);
+    }
+    close(fd);
 
-    // ---- Part 1: only first line ----
+    // ---- Part 2: only first line ----
+    fd = open(argv[1], O_RDONLY);
+    if (fd < 0)
+    {
+        perror("open");
+        return (1);
+    }
+    printf("\n=== ONLY FIRST LINE ===\n");
     line = get_next_line(fd);
     if (line)
     {
         printf("FIRST LINE: %s", line);
         free(line);
     }
-
-    // ---- Part 2: continue until EOF ----
-    while ((line = get_next_line(fd)))
-    {
-        printf("LOOP: %s", line);
-        free(line);
-    }
-
     close(fd);
+
     return (0);
 }
+
 
 // // Reading from stdin
 // printf("Type something (Ctrl+D to end):\n");

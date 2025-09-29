@@ -23,7 +23,7 @@ char	*get_next_line(int fd);
 // Utility prototypes (if needed from utils)
 char	*has_newline(char *buf_terminated);
 char	*ft_join(char *hd, char *tl, char sep);
-void	ft_update_static_array(char **buf, char *s);
+void	ft_update_static_array(char *buf, char *s);
 int		ft_strlen_sep(char *s, char sep);
 
 #endif

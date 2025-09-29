@@ -23,19 +23,28 @@ Every line returned is eventually freed. */
 # include <stdio.h>
 /// @brief get_next_line has no counterpart in libc
 /// @return 
-int main()
+int main(int argc, char **argv)
 {
-    // Reading from a file
-int fd = open("test.txt", O_RDONLY);
-char *line;
-// line = get_next_line(fd);
-// free(line);
-while ((line = get_next_line(fd)))
-{
-    printf("len=%d, line=%s\n", (int)ft_strlen(line), line);
-    free(line);
-}
-close(fd);
+    int   fd;
+    char *line;
+   // Reading from a file
+    if (argc < 2)
+    {
+        printf("Usage: %s <filename>\n", argv[0]);
+        return (1);
+    }
+    fd = open(argv[1], O_RDONLY);
+    if (fd < 0)
+    {
+        perror("open");
+        return (1);
+    }
+    while ((line = get_next_line(fd)))
+    {
+        printf("%s", line);
+        free(line);
+    }
+
 
 // // Reading from stdin
 // printf("Type something (Ctrl+D to end):\n");
@@ -45,5 +54,8 @@ close(fd);
 //     free(line);
 //     line = NULL;
 // }
+    close(fd);
+    return (0);
+
 
 }

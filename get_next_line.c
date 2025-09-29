@@ -22,6 +22,11 @@ void	*reset_return_null(char **pending_content)
 	return (NULL);
 }
 
+/// @brief syscalls of read() in a loop. stop when new line is met or bytes_read is 0. update the static array before return.
+/// @param pending 
+/// @param hd_stat 
+/// @param fd 
+/// @return the next line
 char *reading_loop_body_of_get_next_line(char **pending, char *hd_stat , int fd)
 {
 	int			bytes_read;
@@ -71,12 +76,7 @@ char	*get_next_line(int fd)
 		ft_update_static_array(hd_stat , hd_stat);
 		return (ret);
 	}
-	if (hd_stat[0])
-		pending = ft_join(NULL, hd_stat, '\0');
-
-
-
-	ret = reading_loop_body_of_get_next_line(&pending, hd_stat , fd);
-	return ret;	
-	
+	pending = ft_join(NULL, hd_stat, '\0');
+	ft_update_static_array(hd_stat , NULL);
+	return (reading_loop_body_of_get_next_line(&pending, hd_stat , fd));
 }

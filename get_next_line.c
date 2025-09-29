@@ -27,41 +27,41 @@ char	*get_next_line(int fd)
 	static char	hd_stat[BUFFER_SIZE + 1];
 	char		temp[BUFFER_SIZE + 1];
 	int			bytes_read;
-	char		*pending_content;
-	char *rp;
+	char		*pending;
+	char 		*ret;
 
 	// nec init
 	bytes_read = 1;
-	pending_content = NULL;
+	pending = NULL;
 
-	if (!hd_stat[0] && has_newline(hd_stat))
+	if (hd_stat[0] && has_newline(hd_stat))
 	{
-		rp = ft_join(NULL, hd_stat, '\n');
+		ret = ft_join(NULL, hd_stat, '\n');
 		ft_update_static_array(hd_stat , hd_stat);
-		return (rp);
+		return (ret);
 	}
-	if (!hd_stat[0])
-		pending_content = ft_join(NULL, hd_stat, '\0');
+	if (hd_stat[0])
+		pending = ft_join(NULL, hd_stat, '\0');
 	while (bytes_read)
 	{
 		bytes_read = read(fd, temp, BUFFER_SIZE);
 		if (bytes_read == -1)
-			return (reset_return_null(&pending_content));
+			return (reset_return_null(&pending));
 		temp[bytes_read] = '\0';
 		if (bytes_read == 0)
-			return (pending_content);
+			return (pending);
 		//this case has to have bytes_read > 0
 		if (has_newline(temp))
 		{
-			rp = ft_join(pending_content, temp, '\n');
-			free(pending_content);
+			ret = ft_join(pending, temp, '\n');
+			free(pending);
 			ft_update_static_array(hd_stat , temp);
-			return (rp);
+			return (ret);
 		}
 		// this case has to continue looping
-		rp = ft_join(pending_content, temp, '\0');
-		free(pending_content);
-		pending_content = rp;
+		ret = ft_join(pending, temp, '\0');
+		free(pending);
+		pending = ret;
 	}
 	return (NULL);
 }

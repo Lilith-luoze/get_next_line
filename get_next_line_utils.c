@@ -26,7 +26,6 @@ char	*has_newline(char *buf_terminated)
 /// hd is always a full str joint by tl until sep, int append decide if the sep is included.
 /// return a malloc-ed str
 // #test: does it need to check when len_hd plus len_tl still is zero
-
 char	*ft_join(char *hd, char *tl, char sep)
 {
 	char		*joint;

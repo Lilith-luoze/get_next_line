@@ -1,3 +1,3 @@
-line1
-line2
-line3
+line
+line
+Multiple lines without new line at EOF

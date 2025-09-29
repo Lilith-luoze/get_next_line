@@ -45,10 +45,7 @@ char	*ft_join(char *hd, char *tl, char sep)
 	ft_init_t_join_vars(&t, hd, tl, sep);
 	if (t.len_hd + t.len_tl == 0)
 		return (NULL);
-	if (sep != '\0')
-		joint = malloc(t.len_hd + t.len_tl + 2);
-	else
-		joint = malloc(t.len_hd + t.len_tl + 1);
+	joint = malloc(t.len_hd + t.len_tl + 1);
 	if (!joint)
 		return (NULL);
 	while (hd && hd[t.i])
@@ -63,9 +60,9 @@ char	*ft_join(char *hd, char *tl, char sep)
 	joint[t.i] = '\0';
 	return (joint);
 }
-
-/// @brief update static array before return. copy from s to stat, copy starting after the first new line. if s is NULL or no new line, stat[0] is set to \0.
+/// checked once for s has multiple new lines.
 // #test the case when buf is the address of s. should be okay.
+/// @brief update static array before return. copy from s to stat, copy starting after the first new line. if s is NULL or no new line, stat[0] is set to \0.
 void	ft_update_static_array(char *stat, char *s)
 {
 	int	i;
@@ -94,16 +91,18 @@ void	ft_update_static_array(char *stat, char *s)
 	stat[j] = '\0';
 }
 
-/// @brief count the length of s until sep or \0
+/// @brief count the length of s until \0 (excluded) or sep (included).
 /// @param s
 /// @param sep
-/// @return length of s excluding the sep. If NULL then 0.
+/// @return length of s excluding the sep. If s is NULL, return 0.
 int	ft_strlen_sep(char *s, char sep)
 {
 	int	i;
 
 	i = 0;
 	while (s && s[i] != sep && s[i])
+		i++;
+	if (s && s[i] == sep && sep != '\0')
 		i++;
 	return (i);
 }

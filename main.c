@@ -18,16 +18,15 @@ Every returned line is valid and owned by caller.
 The caller (evaluation main) must guarantee:
 
 Every line returned is eventually freed. */
+#include "get_next_line.h"
+#include <fcntl.h>
+#include <stdio.h>
 
-# include <fcntl.h>
-# include <stdio.h>
-/// @brief get_next_line has no counterpart in libc
-/// @return 
 int main(int argc, char **argv)
 {
     int   fd;
     char *line;
-   // Reading from a file
+
     if (argc < 2)
     {
         printf("Usage: %s <filename>\n", argv[0]);
@@ -39,12 +38,25 @@ int main(int argc, char **argv)
         perror("open");
         return (1);
     }
-    while ((line = get_next_line(fd)))
+
+    // ---- Part 1: only first line ----
+    line = get_next_line(fd);
+    if (line)
     {
-        printf("%s", line);
+        printf("FIRST LINE: %s", line);
         free(line);
     }
 
+    // ---- Part 2: continue until EOF ----
+    while ((line = get_next_line(fd)))
+    {
+        printf("LOOP: %s", line);
+        free(line);
+    }
+
+    close(fd);
+    return (0);
+}
 
 // // Reading from stdin
 // printf("Type something (Ctrl+D to end):\n");
@@ -54,8 +66,3 @@ int main(int argc, char **argv)
 //     free(line);
 //     line = NULL;
 // }
-    close(fd);
-    return (0);
-
-
-}
